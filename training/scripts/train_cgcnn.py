@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    config = TrainConfig.from_project_root(PROJECT_ROOT)
-
+    config = TrainConfig.from_cli()
+    print(config)
     set_seed(config.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info(f"Using device: {device}")

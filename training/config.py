@@ -1,6 +1,6 @@
-from dataclasses import dataclass
+import argparse
 from pathlib import Path
-
+from dataclasses import dataclass
 
 @dataclass
 class TrainConfig:
@@ -26,9 +26,18 @@ class TrainConfig:
     num_workers: int = 0
 
     @classmethod
-    def from_project_root(cls, root: Path):
-        return cls(
-            data_path=root / "data/materials_project/all_data.json",
-            save_dir=root / "models",
-            output_dir=root / "docs/screenshots",
-        )
+    def from_cli(cls):
+        parser = argparse.ArgumentParser()
+        
+        parser.add_argument("--data_path", type=Path, required=True)
+        parser.add_argument("--save_dir", type=Path, default=Path("models"))
+        parser.add_argument("--output_dir", type=Path, default=Path("docs/screenshots"))
+
+        parser.add_argument("--epochs", type=int, default=200)
+        parser.add_argument("--batch_size", type=int, default=128)
+        parser.add_argument("--lr", type=float, default=1e-3)
+        parser.add_argument("--patience", type=int, default=40)
+        parser.add_argument("--seed", type=int, default=42)
+
+        args = parser.parse_args()
+        return cls(**vars(args))

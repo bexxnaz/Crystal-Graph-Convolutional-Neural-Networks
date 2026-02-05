@@ -93,6 +93,26 @@ class Trainer:
 
         return mae_sum / n
 
+    def _validate(self, loader):
+        self.model.eval()
+        total_mae = torch.zeros(self.config.n_targets, device=self.device)
+        total_count = 0
+
+        with torch.no_grad():
+            for batch in loader:
+                targets = batch["target"].to(self.device)
+                preds_n = self.model(
+                    batch["atom_fea"].to(self.device),
+                    batch["nbr_fea"].to(self.device),
+                    batch["nbr_idx"].to(self.device),
+                    batch["batch"].to(self.device),
+                )
+                preds = self.scaler.denormalize(preds_n)
+                total_mae += torch.sum(torch.abs(preds - targets), dim=0)
+                total_count += targets.size(0)
+
+        return (total_mae / total_count).mean().item()
+
     def _save_checkpoint(self):
         path = self.config.save_dir / "cgcnn_best.pt"
         torch.save(

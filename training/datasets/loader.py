@@ -49,13 +49,13 @@ class MaterialDataLoader:
             return []
 
         try:
-            if self.data_path.endswith(".json"):
+            if str(self.data_path).endswith(".json"):
                 # For very large files (MPtrj is 11GB), standard json.load might OOM.
                 # In a real heavy-duty pipeline we'd use ijson or line-based reading.
                 # For now, we assume user might use a subset or have enough RAM.
                 with open(self.data_path, "r") as f:
                     self.raw_data = json.load(f)
-            elif self.data_path.endswith(".csv"):
+            elif str(self.data_path).endswith(".csv"):
                 df = pd.read_csv(self.data_path)
                 self.raw_data = df.to_dict(orient="records")
             else:

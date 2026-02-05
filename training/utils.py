@@ -28,6 +28,10 @@ class TargetScaler:
     def normalize(self, y):
         assert self.fitted
         return (y - self.mean.to(y.device)) / self.std.to(y.device)
+    
+    def denormalize(self, y: torch.Tensor):
+        assert self.fitted, "Scaler not fitted yet!"
+        return y * self.std.to(y.device) + self.mean.to(y.device)
 
 
 def split_indices(n, seed, ratios=(0.7, 0.1, 0.2)):

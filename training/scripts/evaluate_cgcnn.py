@@ -87,7 +87,6 @@ def evaluate(args):
     
     print(f"Loaded {len(data_list)} samples from {args.data_path}")
     
-    # 2️⃣ Build Dataset
     builder = CrystalGraphBuilder(radius=8.0, dStep=0.2)
     dataset = CrystalGraphDataset(data_list, builder, cache_graphs=True)
     
@@ -95,8 +94,6 @@ def evaluate(args):
         dataset, batch_size=args.batch_size, shuffle=False, collate_fn=collate_batch
     )
 
-
-    # 3️⃣ Load CGCNN Model & Scalers
     checkpoint_path = args.model_dir
     if not os.path.exists(checkpoint_path):
         print(f"Checkpoint not found at {checkpoint_path}")
@@ -115,7 +112,7 @@ def evaluate(args):
     scaler_scale = checkpoint['scaler_scale'].to(device)
     model.eval()
     
-    # 4. Predict
+    # Predict
     all_preds = []
     all_targets = []
     
